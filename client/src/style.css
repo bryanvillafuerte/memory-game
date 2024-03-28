@@ -1,3 +1,178 @@
 /**
  * Create your styles here.
  */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  height: 100vh;
+}
+
+.main-container .inner-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-container .inner-container .heading {
+
+}
+
+.main-container .inner-container .heading h1 {
+  text-align: center;
+}
+
+.main-container .inner-container .content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.main-container .inner-container .content .container-column {
+  padding: 20px
+}
+
+.main-container .inner-container .content .container-column form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%
+}
+
+.main-container .inner-container .content .container-column form .player-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+  width: inherit;
+}
+
+.main-container .inner-container .content .container-column form .player-input label {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+}
+
+.main-container .inner-container .content .container-column form .player-input input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.main-container .inner-container .content .container-column form .radio-tabs {
+  width: inherit;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.main-container .inner-container .content .container-column form .radio-tabs .tab input[type="radio"] {
+  display: none;
+}
+
+.main-container .inner-container .content .container-column form .radio-tabs .tab label {
+  border: 1px solid midnightblue;
+  padding: 10px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+.main-container .inner-container .content .container-column form .radio-tabs .tab input[type="radio"]:checked + label {
+  background-color: midnightblue;
+  color: white;
+  font-weight: bold;
+}
+
+.main-container .inner-container .content .container-column form button {
+  margin-top: 50px;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition-duration: .2s;
+  font-size: 1rem;
+}
+
+.main-container .inner-container .content .container-column form button:hover {
+  background-color: midnightblue;
+  color: white;
+}
+
+.main-container .inner-container .content .container-column table {
+  width: 100%;
+}
+
+.main-container .inner-container .content .container-column table tr {
+  text-align: center;
+}
+
+.start-game-container {
+  width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.start-game-container .inner-container {
+  width: 100vw;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  height: auto;
+}
+
+.start-game-container .inner-container a {
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition-duration: .2s;
+  font-size: 1rem;
+}
+
+.start-game-container .inner-container a:hover {
+  background-color: midnightblue;
+  color: white;
+}
+
+.start-game-container .inner-container .game-container .grid-container {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+.start-game-container .inner-container .game-container .grid-container .card {
+  background-color: #f0f0f0;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.start-game-container .inner-container .game-container .grid-container .card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
