@@ -18,11 +18,19 @@ body {
   overflow-x: hidden;
   box-sizing: border-box;
   height: 100vh;
+  display: flex;
+  justify-content: center;
 }
 
 .main-container .inner-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
   max-width: 1200px;
   margin: 0 auto;
+  text-align: center;
+  height: auto;
 }
 
 .main-container .inner-container .heading {
@@ -31,6 +39,7 @@ body {
 
 .main-container .inner-container .heading h1 {
   text-align: center;
+  margin-bottom: 50px;
 }
 
 .main-container .inner-container .content {
@@ -90,12 +99,18 @@ body {
   cursor: pointer;
   display: block;
   text-align: center;
+  transition-duration: .2s;
 }
 
 .main-container .inner-container .content .container-column form .radio-tabs .tab input[type="radio"]:checked + label {
   background-color: midnightblue;
   color: white;
   font-weight: bold;
+}
+
+.main-container .inner-container .content .container-column form .radio-tabs .tab input[type="radio"]:hover + label {
+  background-color: lightblue;
+  color: black;
 }
 
 .main-container .inner-container .content .container-column form button {
@@ -131,11 +146,18 @@ body {
 }
 
 .start-game-container .inner-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 100vw;
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
   height: auto;
+}
+
+.start-game-container .inner-container h3 {
+  font-weight: normal;
 }
 
 .start-game-container .inner-container a {
@@ -145,11 +167,30 @@ body {
   cursor: pointer;
   transition-duration: .2s;
   font-size: 1rem;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .start-game-container .inner-container a:hover {
   background-color: midnightblue;
   color: white;
+}
+
+.start-game-container .inner-container .score-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.start-game-container .inner-container .score-container .timer, .moves, .score {
+  font-size: 1rem;
+  width: 150px;
+}
+
+.start-game-container .inner-container .score-container .time, .move-count, .score-count  {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid midnightblue;
 }
 
 .start-game-container .inner-container .game-container .grid-container {
