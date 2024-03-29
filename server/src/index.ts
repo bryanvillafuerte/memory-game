@@ -14,24 +14,17 @@ app.use(express.json());
 
 interface LeaderboardEntry {
 	playerName: string;
-	playerTime: string;
+	playerScore: number;
 }
 
 let leaderboard: LeaderboardEntry[] = [];
 
-// Validate time format
-function isValidTimeFormat(time: string): boolean {
-	return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(time);
-}
-
 // CRUD Endpoints
-// Create endpoint with default playerTime
+// Create endpoint with default playerScore
 app.post('/leaderboard', (req: Request, res: Response) => {
-	const { playerName, playerTime = "00:00:00" } = req.body; // Default playerTime as "00:00:00"
-	if (!isValidTimeFormat(playerTime)) {
-		return res.status(400).send('Invalid playerTime format. Use HH:MM:SS.');
-	}
-	const entry: LeaderboardEntry = { playerName, playerTime };
+	const { playerName, playerScore = 0 } = req.body;
+
+	const entry: LeaderboardEntry = { playerName, playerScore };
 	leaderboard.push(entry);
 	res.status(201).json(entry);
 });
@@ -44,14 +37,12 @@ app.get('/leaderboard', (req: Request, res: Response) => {
 // Update
 app.put('/leaderboard/:playerName', (req: Request, res: Response) => {
 	const { user } = req.params;
-	const { timescore } = req.body;
-	if (!isValidTimeFormat(timescore)) {
-		return res.status(400).send('Invalid playerTime format. Use HH:MM:SS.');
-	}
+	const { score } = req.body;
+
 	const index = leaderboard.findIndex(entry => entry.playerName === user);
 
 	if (index > -1) {
-		leaderboard[index].playerTime = timescore;
+		leaderboard[index].playerScore = score;
 		res.status(200).json(leaderboard[index]);
 	} else {
 		res.status(404).send('User not found.');

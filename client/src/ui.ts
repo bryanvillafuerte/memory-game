@@ -1,6 +1,7 @@
 import { parseGridSize } from "./helpers";
 
-export function renderLeaderboard(data: { playerName: string, playerTime: string }[]) {
+// Render the leaderboard on the page
+export function renderLeaderboard(data: { playerName: string, playerScore: number }[]) {
 	const leaderboardContainer = document.querySelector<HTMLDivElement>(".container-column:last-child");
 
 	if (!leaderboardContainer) {
@@ -16,28 +17,36 @@ export function renderLeaderboard(data: { playerName: string, playerTime: string
 		message.textContent = "There are no players in the leaderboard yet.";
 		leaderboardContainer.appendChild(message);
 	} else {
+		data.sort((a, b) => parseInt(String(b.playerScore)) - parseInt(String(a.playerScore)));
+
 		// Create table and headers
 		const table = document.createElement("table");
 		const thead = document.createElement("thead");
 		const tbody = document.createElement("tbody");
 		const headerRow = document.createElement("tr");
+		const headerRank = document.createElement("th");
+		headerRank.textContent = "Rank";
 		const headerPlayer = document.createElement("th");
 		headerPlayer.textContent = "Player";
-		const headerTime = document.createElement("th");
-		headerTime.textContent = "Time Score";
+		const headerScore = document.createElement("th");
+		headerScore.textContent = "Score";
+		headerRow.appendChild(headerRank);
 		headerRow.appendChild(headerPlayer);
-		headerRow.appendChild(headerTime);
+		headerRow.appendChild(headerScore);
 		thead.appendChild(headerRow);
 		table.appendChild(thead);
 		table.appendChild(tbody);
 
 		// Fill table rows with data
-		data.forEach(entry => {
+		data.forEach((entry, index) => {
 			const row = document.createElement("tr");
+			const rankCell = document.createElement("td");
+			rankCell.textContent = (index + 1).toString();
 			const playerName = document.createElement("td");
 			playerName.textContent = entry.playerName;
 			const playerScore = document.createElement("td");
-			playerScore.textContent = entry.playerTime;
+			playerScore.textContent = entry.playerScore.toString();
+			row.appendChild(rankCell);
 			row.appendChild(playerName);
 			row.appendChild(playerScore);
 			tbody.appendChild(row);
@@ -47,12 +56,17 @@ export function renderLeaderboard(data: { playerName: string, playerTime: string
 	}
 }
 
+// Render the game page
 export function loadStartGamePage(playerName: string, gridSize: string, shuffledImages: string[]) {
 	const appContainer = document.querySelector<HTMLDivElement>("#app");
 	if (appContainer) {
 
 		appContainer.innerHTML = `
 			<div class="start-game-container">
+				<div id="overlay" class="overlay">
+					<button id="startButton"">Start Game</button>
+				</div>
+			
 				<div class="inner-container">
 					<h1>Memory Game</h1>
 					<h3>Game on, ${playerName}! The timer will start once you click on a card.</h3>
@@ -94,16 +108,38 @@ function createGrid(rows: number, columns: number, shuffledImages: string[]) {
 	gridContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
 	gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
+	let openedCards: HTMLImageElement[] = [];
+
 	for (let i = 0; i < rows * columns; i++) {
 		const card = document.createElement("div");
 		card.className = "card";
 		const img = document.createElement("img");
-		img.src = shuffledImages[i]; // Assign an image to each card
-		img.style.display = "none"; // Initially hide the image
+		img.src = shuffledImages[i];
+		img.style.display = "none";
 		card.appendChild(img);
 		card.addEventListener("click", () => {
-			img.style.display = "block"; // Show the image when the card is clicked
-			// Add logic here for checking matches
+			// Ensure the card is not already open or matched
+			if (img.style.display === "none" && openedCards.length < 2) {
+				img.style.display = "block";
+				openedCards.push(img); // Add the clicked card to the opened cards array
+
+				// Check if two cards are opened
+				if (openedCards.length === 2) {
+					const [firstCard, secondCard] = openedCards;
+					// Check if the images match
+					if (firstCard.src === secondCard.src) {
+						// If images match, keep the cards open
+						openedCards = [];
+					} else {
+						// If images do not match, flip back the cards after a short delay
+						setTimeout(() => {
+							firstCard.style.display = "none";
+							secondCard.style.display = "none";
+							openedCards = [];
+						}, 1000); // Adjust the delay time as needed
+					}
+				}
+			}
 		});
 		gridContainer.appendChild(card);
 	}
