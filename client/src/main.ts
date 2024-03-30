@@ -1,5 +1,5 @@
 import "../src/style.css";
-import { loadStartGamePage } from "./ui";
+import { loadStartGamePage } from "./gameboard";
 import { prepareGameImages, fetchLeaderboard } from "./api";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -64,24 +64,7 @@ function setupFormHandler() {
 		const gridSize = gridSizeInputs.length > 0 ? gridSizeInputs[0].value : "";
 
 		if (playerName && gridSize) {
-			try {
-				const response = await fetch("http://localhost:8888/leaderboard", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ playerName }),
-				});
-
-				if (!response.ok) {
-					throw new Error("Failed to add player to leaderboard")
-				}
-
-				window.location.href = `/start-game?playerName=${encodeURIComponent(playerName)}&gridSize=${encodeURIComponent(gridSize)}`;
-
-			} catch (error) {
-				console.error("Error adding player to leaderboard:", error);
-			}
+			window.location.href = `/start-game?playerName=${encodeURIComponent(playerName)}&gridSize=${encodeURIComponent(gridSize)}`;
 		} else {
 			console.error("Player name or grid size not specified");
 		}
@@ -96,35 +79,6 @@ function getURLSearchParams() {
 	};
 }
 
-function startTimer(display: Element | null) {
-	let startTime = Date.now();
-
-	function updateTimer() {
-		let elapsedTime = Date.now() - startTime;
-		let milliseconds: string = String(Math.floor((elapsedTime % 1000) / 10));
-		let seconds: string = String(Math.floor((elapsedTime / 1000) % 60));
-		let minutes: string = String(Math.floor((elapsedTime / (1000 * 60)) % 60));
-
-		milliseconds = pad(Number(milliseconds), 2);
-		seconds = pad(Number(seconds), 2);
-		minutes = pad(Number(minutes), 2);
-
-		display!.textContent = `${minutes}:${seconds}:${milliseconds}`;
-	}
-
-	function pad(num: number, size: number) {
-		let s = num.toString();
-		while (s.length < size) {
-			s = '0' + s;
-		}
-		return s;
-	}
-
-	updateTimer();
-	setInterval(updateTimer, 10);
-}
-
-
 document.addEventListener("DOMContentLoaded", async () => {
 	const path = window.location.pathname;
 
@@ -136,17 +90,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 		fetchLeaderboard();
 		setupFormHandler();
 	}
-
-	const overlay = document.getElementById("overlay");
-	const startButton = document.getElementById("startButton");
-	const timeDisplay = document.querySelector(".time");
-
-	// Show overlay when the DOM is loaded
-	overlay!.style.display = "flex";
-
-	startButton!.addEventListener("click", () => {
-		// Hide the overlay when the button is clicked
-		overlay!.style.display = "none";
-		startTimer(timeDisplay);
-	});
 });

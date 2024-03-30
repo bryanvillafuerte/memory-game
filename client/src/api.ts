@@ -1,5 +1,5 @@
 import { parseGridSize, createImagePairs } from "./helpers";
-import { renderLeaderboard } from "./ui";
+import { renderLeaderboard } from "./leaderboard";
 
 export async function fetchLeaderboard() {
 	try {
