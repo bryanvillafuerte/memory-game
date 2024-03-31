@@ -1,20 +1,25 @@
-export function renderLeaderboard(data: { playerName: string, playerScore: number }[]) {
-	const leaderboardContainer = document.querySelector<HTMLDivElement>(".container-column:last-child");
+export function renderLeaderboard(data: { playerName: string; playerScore: number }[]) {
+	const leaderboardContainer = document.querySelector<HTMLDivElement>(".leaderboard"); // Find the leaderboard container in the DOM
 
-	if (!leaderboardContainer) {
+	if (!leaderboardContainer) { // Check if the container is not found
 		console.error("Leaderboard container not found");
 		return;
 	}
 
-	// Clear previous content
+	// Clear previous content of the leaderboard container
 	leaderboardContainer.innerHTML = "<h2>Leaderboard</h2>";
 
 	if (data.length === 0) {
+		// If there are no players in the leaderboard, display a message
 		const message = document.createElement("p");
 		message.textContent = "There are no players in the leaderboard yet.";
-		leaderboardContainer.appendChild(message);
+		leaderboardContainer.appendChild(message); // Append the message to the leaderboard container
 	} else {
-		data.sort((a, b) => parseInt(String(b.playerScore)) - parseInt(String(a.playerScore)));
+		// Sort the data in descending order based on playerScore
+		data.sort((a, b) => b.playerScore - a.playerScore);
+
+		// Truncate the data to show only the top 10 players
+		const top10Players = data.slice(0, 10);
 
 		// Create table and headers
 		const table = document.createElement("table");
@@ -34,8 +39,8 @@ export function renderLeaderboard(data: { playerName: string, playerScore: numbe
 		table.appendChild(thead);
 		table.appendChild(tbody);
 
-		// Fill table rows with data
-		data.forEach((entry, index) => {
+		// Fill table rows with data for the top 10 players
+		top10Players.forEach((entry, index) => {
 			const row = document.createElement("tr");
 			const rankCell = document.createElement("td");
 			rankCell.textContent = (index + 1).toString();
@@ -49,6 +54,6 @@ export function renderLeaderboard(data: { playerName: string, playerScore: numbe
 			tbody.appendChild(row);
 		});
 
-		leaderboardContainer.appendChild(table);
+		leaderboardContainer.appendChild(table); // Append the table to the leaderboard container
 	}
 }

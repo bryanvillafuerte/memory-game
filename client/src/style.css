@@ -49,7 +49,10 @@ body {
 }
 
 .main-container .inner-container .content .container-column {
-  padding: 20px
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .main-container .inner-container .content .container-column form {
@@ -136,12 +139,20 @@ body {
   color: black;
 }
 
-.main-container .inner-container .content .container-column table {
+.main-container .inner-container .content .container-column .leaderboard {
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  padding: 20px;
+  min-height: 200px;
+}
+
+.main-container .inner-container .content .container-column .leaderboard table {
   width: 100%;
 }
 
-.main-container .inner-container .content .container-column table tr {
+.main-container .inner-container .content .container-column .leaderboard table tr {
   text-align: center;
+  height: 2.5rem;
 }
 
 .start-game-container {
@@ -221,6 +232,7 @@ body {
   align-items: center;
   cursor: pointer;
   user-select: none;
+  border-radius: 5px;
 }
 
 .start-game-container .inner-container .game-container .grid-container .card img {

@@ -2,6 +2,7 @@ import "../src/style.css";
 import { loadStartGamePage } from "./gameboard";
 import { prepareGameImages, fetchLeaderboard } from "./api";
 
+// Set up the initial HTML structure when the DOM is loaded
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 	<div class="main-container">
 		<div class="inner-container">
@@ -40,14 +41,16 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 				</div>
 				
 				<div class="container-column">
-					<h2>Leaderboard</h2>
+					<div class="leaderboard">
+						<h2>Leaderboard</h2>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 `;
 
-// Handle form submission
+// Function to handle form submission
 function setupFormHandler() {
 	const form = document.querySelector<HTMLFormElement>("form");
 	if (!form) {
@@ -58,11 +61,13 @@ function setupFormHandler() {
 	form.addEventListener("submit", async event => {
 		event.preventDefault();
 
+		// Get player name input and selected grid size
 		const playerNameInput = document.querySelector<HTMLInputElement>("#playerName");
 		const gridSizeInputs = document.querySelectorAll<HTMLInputElement>("input[name='gridSize']:checked");
-		const playerName = playerNameInput ? playerNameInput.value : "";
-		const gridSize = gridSizeInputs.length > 0 ? gridSizeInputs[0].value : "";
+		const playerName = playerNameInput ? playerNameInput.value : ""; // Get player name value or set to empty string if not found
+		const gridSize = gridSizeInputs.length > 0 ? gridSizeInputs[0].value : ""; // Get selected grid size value
 
+		// Redirect to start game page with player name and grid size as URL parameters
 		if (playerName && gridSize) {
 			window.location.href = `/start-game?playerName=${encodeURIComponent(playerName)}&gridSize=${encodeURIComponent(gridSize)}`;
 		} else {
@@ -71,22 +76,26 @@ function setupFormHandler() {
 	});
 }
 
+// Function to extract URL parameters
 function getURLSearchParams() {
 	const searchParams = new URLSearchParams(window.location.search);
 	return {
-		playerName: searchParams.get("playerName") || "",
-		gridSize: searchParams.get("gridSize") || "",
+		playerName: searchParams.get("playerName") || "", // Get player name parameter or set to empty string if not found
+		gridSize: searchParams.get("gridSize") || "", // Get grid size parameter
 	};
 }
 
+// Event listener for DOMContentLoaded event
 document.addEventListener("DOMContentLoaded", async () => {
 	const path = window.location.pathname;
 
+	// If on the start-game page
 	if (path === "/start-game") {
 		const { playerName, gridSize } = getURLSearchParams();
 		const shuffledImages = await prepareGameImages(gridSize);
 		loadStartGamePage(playerName, gridSize, shuffledImages);
 	} else {
+		// If on any other page, fetch leaderboard and set up form handler
 		fetchLeaderboard();
 		setupFormHandler();
 	}

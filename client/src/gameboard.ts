@@ -1,82 +1,96 @@
 import { parseGridSize } from "./helpers";
 
+// Function to load the start game page with necessary elements and event listeners
 export function loadStartGamePage(playerName: string, gridSize: string, shuffledImages: string[]) {
+	// Find the app container
 	const appContainer = document.querySelector<HTMLDivElement>("#app");
-	if (appContainer) {
-
-		appContainer.innerHTML = `
-            <div class="start-game-container">
-                <div id="overlay" class="overlay">
-                    <button id="startButton">Start Game</button>
-                </div>
-                
-                <div id="overlay-game-end" class="overlay-game-end">
-                    <div class="overlay-content">
-                        <h2>Good job, ${playerName}</h2>
-                        <p>Your score is <span class="final-score">0</span></p>
-                        <button id="restartGame">Restart Game</button>
-                        <button id="submitScore">Submit Score</button>
-                    </div>
-                </div>
-        
-                <div class="inner-container">
-                    <h1>Memory Game</h1>
-                    <h2>Game on, ${playerName}!</h2>
-                    
-                    <div class="score-container">
-                        <div class="timer">
-                            <div>Timer</div>
-                            <div class="time">00:00:00</div>
-                        </div>
-                        <div class="moves">
-                            <div>Moves</div>
-                            <div class="move-count">0</div>
-                        </div>
-                        <div class="score">
-                            <div>Score</div>
-                            <div class="score-count">0</div>
-                        </div>
-                    </div>
-                    
-                    <div class="game-container"></div>
-                    
-                    <a href="/">Back to main page</a>
-                </div>
-            </div>
-        `;
-
-		const innerContainer = appContainer.querySelector(".game-container");
-		if (innerContainer) {
-			const { rows, columns } = parseGridSize(gridSize);
-			const grid = createGrid(rows, columns, shuffledImages);
-			innerContainer.appendChild(grid);
-		}
+	if (!appContainer) {
+		console.error("App container not found");
+		return;
 	}
 
+	// Set up the initial HTML structure for the start game page
+	appContainer.innerHTML = `
+        <div class="start-game-container">
+            <div id="overlay" class="overlay">
+                <button id="startButton">Start Game</button>
+            </div>
+            
+            <div id="overlay-game-end" class="overlay-game-end">
+                <div class="overlay-content">
+                    <h2>Good job, ${playerName}!</h2>
+                    <p>Your score is <span class="final-score">0</span></p>
+                    <button id="restartGame">Restart Game</button>
+                    <button id="submitScore">Submit Score</button>
+                </div>
+            </div>
+    
+            <div class="inner-container">
+                <h1>Memory Game</h1>
+                <h2>Game on, ${playerName}!</h2>
+                
+                <div class="score-container">
+                    <div class="timer">
+                        <div>Timer</div>
+                        <div class="time">00:00:00</div>
+                    </div>
+                    <div class="moves">
+                        <div>Moves</div>
+                        <div class="move-count">0</div>
+                    </div>
+                    <div class="score">
+                        <div>Score</div>
+                        <div class="score-count">0</div>
+                    </div>
+                </div>
+                
+                <div class="game-container"></div>
+                
+                <a href="/">Back to main page</a>
+            </div>
+        </div>
+    `;
+
+	// Find necessary elements after rendering the HTML
+	const innerContainer = appContainer.querySelector(".game-container");
 	const overlay = document.getElementById("overlay");
 	const startButton = document.getElementById("startButton");
+	const submitScoreButton = document.getElementById("submitScore");
+	const restartGameButton = document.getElementById("restartGame");
 	const timeDisplay = document.querySelector(".time");
 
-	// Show overlay when the DOM is loaded
-	overlay!.style.display = "flex";
+	// Check if any required elements are missing
+	if (!innerContainer || !overlay || !startButton || !submitScoreButton || !restartGameButton || !timeDisplay) {
+		console.error("Required elements not found");
+		return;
+	}
 
-	startButton!.addEventListener("click", () => {
-		// Hide the overlay when the button is clicked
-		overlay!.style.display = "none";
+	// Display overlay initially
+	overlay.style.display = "flex";
+
+	// Add event listeners for buttons
+	startButton.addEventListener("click", () => {
+		overlay.style.display = "none";
 		startTimer(timeDisplay);
 	});
 
-	const submitScoreButton = document.getElementById("submitScore");
-	submitScoreButton!.addEventListener("click", () => {
+	submitScoreButton.addEventListener("click", () => {
 		submitScore(playerName);
 	});
 
-	const restartGameButton = document.getElementById("restartGame");
-	restartGameButton!.addEventListener("click", () => {
+	restartGameButton.addEventListener("click", () => {
 		restartGame();
 	});
+
+	// Create the grid for the game
+	if (innerContainer) {
+		const { rows, columns } = parseGridSize(gridSize);
+		const grid = createGrid(rows, columns, shuffledImages);
+		innerContainer.appendChild(grid);
+	}
 }
 
+// Function to create the grid for the game
 function createGrid(rows: number, columns: number, shuffledImages: string[]) {
 	const gridContainer = document.createElement("div");
 	gridContainer.className = "grid-container";
@@ -86,6 +100,7 @@ function createGrid(rows: number, columns: number, shuffledImages: string[]) {
 	let openedCards: HTMLImageElement[] = [];
 	let moveCount = 0;
 
+	// Iterate through each cell in the grid
 	for (let i = 0; i < rows * columns; i++) {
 		const card = document.createElement("div");
 		card.className = "card";
@@ -130,6 +145,7 @@ function createGrid(rows: number, columns: number, shuffledImages: string[]) {
 	return gridContainer;
 }
 
+// Function to start the timer for the game
 let timerInterval: NodeJS.Timeout;
 
 function startTimer(display: Element | null) {
@@ -165,25 +181,24 @@ function startTimer(display: Element | null) {
 	}
 
 	updateTimer();
-	timerInterval = setInterval(updateTimer, 10); // Assign the interval to the global variable
+	timerInterval = setInterval(updateTimer, 10);
 }
 
+// Function to calculate the score for the game
 function calculateScore(elapsedTime: number, moveCount: number): number {
-	// Scoring algorithm: Score is inversely proportional to time and moves
-	const maxScore = 10000; // Maximum score
-	const maxTime = 600000; // Maximum time (10 minutes) in milliseconds
-	const maxMoves = 100; // Maximum moves
+	const maxScore = 100000;
+	const maxTime = 600000;
+	const maxMoves = 100;
 
-	// Calculate score based on time and moves
 	const timeScore = maxTime - Math.min(elapsedTime, maxTime);
 	const moveScore = maxMoves - Math.min(moveCount, maxMoves);
 
-	// Calculate total score
 	return Math.floor((timeScore + moveScore) / (maxTime + maxMoves) * maxScore);
 }
 
+// Function to handle end of the game
 function endGame() {
-	clearInterval(timerInterval); // Clear the interval to stop the timer
+	clearInterval(timerInterval);
 	const overlay = document.getElementById("overlay-game-end");
 	if (overlay) {
 		overlay.style.display = "flex";
@@ -196,11 +211,12 @@ function endGame() {
 	}
 }
 
-
+// Function to restart the game
 function restartGame() {
 	window.location.reload();
 }
 
+// Function to submit the score to the server
 function submitScore(playerName: string) {
 	const score = parseInt(document.querySelector(".score-count")!.textContent!);
 	const requestBody = {
